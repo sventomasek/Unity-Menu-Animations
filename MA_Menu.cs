@@ -16,7 +16,11 @@ public class MA_Menu : MonoBehaviour
         ScaleX = 1 << 1, // Scales the menu on the X axis
         ScaleY = 1 << 2, // Scales the menu on the Y axis
         SpinClockwise = 1 << 3, // Spins the menu clockwise
-        SpinCounterclockwise = 1 << 4 // Spins the menu counterclockwise
+        SpinCounterclockwise = 1 << 4, // Spins the menu counterclockwise
+        SpinForwards = 1 << 5,
+        SpinBackwards = 1 << 6,
+        SpinAlongY = 1 << 7,
+        SpinAlongY1 = 1 << 8
     }
     [SerializeField] AnimationType animationType = AnimationType.AlphaFade;
 
@@ -62,6 +66,16 @@ public class MA_Menu : MonoBehaviour
             if (animationType.HasFlag(AnimationType.SpinClockwise) || animationType.HasFlag(AnimationType.SpinCounterclockwise)) {
                 transform.localRotation = Quaternion.Lerp(transform.localRotation, new Quaternion(defaultRotation.x, defaultRotation.y, 0, defaultRotation.w), spinSpeed * Time.unscaledDeltaTime);
             }
+
+            // Linearly interpolates the current X rotation to 0
+            if (animationType.HasFlag(AnimationType.SpinForwards) || animationType.HasFlag(AnimationType.SpinBackwards)) {
+                transform.localRotation = Quaternion.Lerp(transform.localRotation, new Quaternion(0, defaultRotation.y, defaultRotation.z, defaultRotation.w), spinSpeed * Time.unscaledDeltaTime);
+            }
+
+            // Linearly interpolates the current Y rotation to 0
+            if (animationType.HasFlag(AnimationType.SpinAlongY) || animationType.HasFlag(AnimationType.SpinAlongY1)) {
+                transform.localRotation = Quaternion.Lerp(transform.localRotation, new Quaternion(defaultRotation.x, 0, defaultRotation.z, defaultRotation.w), spinSpeed * Time.unscaledDeltaTime);
+            }
         }
         else // Hide the Menu
         {
@@ -93,6 +107,26 @@ public class MA_Menu : MonoBehaviour
             // Linearly interpolates the current Z rotation to -360, which will make the rotation Counterclockwise
             if (animationType.HasFlag(AnimationType.SpinCounterclockwise)) {
                 transform.localRotation = Quaternion.Lerp(transform.localRotation, new Quaternion(defaultRotation.x, defaultRotation.y, -360, defaultRotation.w), spinSpeed / 500 * Time.unscaledDeltaTime);
+            }
+
+            // Linearly interpolates the current X rotation to 360
+            if (animationType.HasFlag(AnimationType.SpinForwards)) {
+                transform.localRotation = Quaternion.Lerp(transform.localRotation, new Quaternion(360, defaultRotation.y, defaultRotation.z, defaultRotation.w), spinSpeed / 500 * Time.unscaledDeltaTime);
+            }
+
+            // Linearly interpolates the current X rotation to -360, which will rotate in the opposite direction
+            if (animationType.HasFlag(AnimationType.SpinBackwards)) {
+                transform.localRotation = Quaternion.Lerp(transform.localRotation, new Quaternion(360, defaultRotation.y, defaultRotation.z, defaultRotation.w), spinSpeed / 500 * Time.unscaledDeltaTime);
+            }
+
+            // Linearly interpolates the current Y rotation to 360
+            if (animationType.HasFlag(AnimationType.SpinAlongY)) {
+                transform.localRotation = Quaternion.Lerp(transform.localRotation, new Quaternion(defaultRotation.x, -360, defaultRotation.z, defaultRotation.w), spinSpeed / 500 * Time.unscaledDeltaTime);
+            }
+
+            // Linearly interpolates the current Y rotation to -360, which will rotate in the opposite direction
+            if (animationType.HasFlag(AnimationType.SpinAlongY1)) {
+                transform.localRotation = Quaternion.Lerp(transform.localRotation, new Quaternion(defaultRotation.x, -360, defaultRotation.z, defaultRotation.w), spinSpeed / 500 * Time.unscaledDeltaTime);
             }
         }
     }
